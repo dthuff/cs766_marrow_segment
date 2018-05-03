@@ -1,0 +1,18 @@
+This directory contains the main script bm_segment and the scripts it calls.
+
+bm_segment runs bone marrow segmentation for a set of defined patients.  This process ontains the following steps.
+  Load PET and CT dicom data with dcm2mat.  The dcm2mat script was not developed by me, but by a previous student in our lab.
+  Run whole bone segmentation with extract_bone_mask
+  Locate PET and CT axial minima with find_axial_minima for intervertebral disk locations.
+  Locate ends of the patient spine with find_spine_ends, and reject minima outside these bounds
+  Segment each vertebra by eroding bone mask between adjacent minima
+  Segment other bone marrow volumes by eroding the whole bone mask minus the vertebral marrow mask
+  Produce the final bone marrow segmentation as the union of the vertebral and other marrow segmentations.
+  
+bm_plot produces summary plots for debugging or presenting results of segmentation process.  Requires bm_segment to be run beforehand.
+
+  
+Other helper functions are:
+  ExtractNLargestBlobs - extract the largest connected components from a 2D binary image.  I did not write this script.
+  ExtractNLargestBlobs3 - extract the largest connected components from a 3D binary image volume.  I modified ExtractNLargestBlobs to produce this script.
+  SaveAnnotatedImg - allows for saving of overplotted matlab figures.  I did not write this script.
