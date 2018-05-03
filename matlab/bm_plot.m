@@ -1,7 +1,4 @@
 %% plotting
-    % Ground truth axial slices for patient HB03
-    % gt_slices = 336-[95, 104, 111, 118, 126, 135, 144, 153, 164, 174, 185, 196];
-
     % voxel aspect ratio, for plotting
     voxel_ratio = ct_struct.voxel_size(3)/ct_struct.voxel_size(2);
 
@@ -10,7 +7,9 @@
 
     %% Sagittal images showing bone masking workflow
     fh1 = figure('position',[50, 200, 1800, 800]);
-    [~, slice] = max(sum(sum(whole_bone_mask,1), 3)); %sagittal slice with most bone voxels
+    [~, slice] = max(sum(sum(whole_bone_mask,1), 3)); 
+    
+    %sagittal slice with most bone voxels
     slice_to_plot = squeeze(ct(:,slice,:));
     ct_window = [-700 800];
     pet_window = [0 8];
@@ -77,27 +76,26 @@
     subplot(1, 2, 1);
     imshow(rot90(slice_to_plot), ct_window);
     hold on;
-    %visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
-% 
-%     for j=1:size(ct_minima_inv,2)
-%         line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
-%     end
-%     for j=1:size(pet_minima_inv,2)
-%         line([310, 320], [pet_minima_inv(j), pet_minima_inv(j)], 'color', 'green', 'linewidth',1);
-%     end
+    visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
+    for j=1:size(ct_minima_inv,2)
+        line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
+    end
+    for j=1:size(pet_minima_inv,2)
+        line([310, 320], [pet_minima_inv(j), pet_minima_inv(j)], 'color', 'green', 'linewidth',1);
+    end
     daspect([voxel_ratio 1 1]);
     title(['HB' patients{i} ' CT Slice with Detected Minima']);
     
     subplot(1, 2, 2);
     imshow(rot90(squeeze(pet(:,slice,:))), pet_window);
     hold on;
-    %visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
-%     for j=1:size(ct_minima_inv,2)
-%         line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
-%     end
-%     for j=1:size(pet_minima_inv,2)
-%         line([310, 320], [pet_minima_inv(j), pet_minima_inv(j)], 'color', 'green', 'linewidth',1);
-%     end
+    visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
+    for j=1:size(ct_minima_inv,2)
+        line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
+    end
+    for j=1:size(pet_minima_inv,2)
+        line([310, 320], [pet_minima_inv(j), pet_minima_inv(j)], 'color', 'green', 'linewidth',1);
+    end
     daspect([voxel_ratio 1 1]);
     title(['HB' patients{i} ' PET Slice with Detected Minima']);
     
@@ -105,14 +103,13 @@
     imwrite(other_marrow_mask, ['./images/HB' patients{i} 'marrow2.png']);
 
     
-    %%
-    
+    %% whole body mask
     figure()
     imshow(rot90(squeeze(body_mask(:, 256, :))))
     daspect([voxel_ratio 1 1]);
 
 
-    %%
+    %% shoulder, pelvis localization workflow
     figure('Position',[200,300,800,600]);
     subplot(3, 1, 1);
     plot(z_, body_mask_axial);
@@ -132,7 +129,7 @@
     plot([shoulder_slice-shoulders_offset, shoulder_slice-shoulders_offset],[0,12000],'k--');
 
     
-    %%
+    %% other marrow workflow
     figure('position',[50, 200, 1800, 800]);
 
     % vertebral marrow mask
@@ -153,7 +150,7 @@
     daspect([voxel_ratio 1 1]);
     title('Eroded Difference Mask');
     
-    %six largest components
+    % largest components
     subplot(1, 4, 4);
     imshow(rot90(squeeze(other_marrow_mask(:,slice,:))));
     daspect([voxel_ratio 1 1]);

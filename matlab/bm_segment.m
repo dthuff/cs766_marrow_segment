@@ -26,7 +26,8 @@ for i=1:size(patients, 2)
     small_volume_threshold = 1000;
     dilation_scale = 3;
 
-    whole_bone_mask = extract_bone_mask(ct, bone_threshold, small_volume_threshold, dilation_scale);
+    whole_bone_mask = extract_bone_mask(ct, bone_threshold, ...
+                            small_volume_threshold, dilation_scale);
 
     % mask CT, PET with bone mask
     ct_bone = ct.*whole_bone_mask;
@@ -52,8 +53,10 @@ for i=1:size(patients, 2)
     
     [shoulder_slice, pelvis_slice] = find_spine_ends(pet, shoulder_offset, pelvis_offset);
     
-    pet_minima = pet_minima((pet_minima < pelvis_slice) & (pet_minima > shoulder_slice));
-    ct_minima =  ct_minima((ct_minima < pelvis_slice) & (ct_minima > shoulder_slice));
+    pet_minima = pet_minima((pet_minima < pelvis_slice) & ...
+                            (pet_minima > shoulder_slice));
+    ct_minima =  ct_minima((ct_minima < pelvis_slice) & ...
+                           (ct_minima > shoulder_slice));
 
     % inverted minima indices, for plotting
     pet_minima_inv = size(ct,3) + 1 - pet_minima;
@@ -80,18 +83,21 @@ for i=1:size(patients, 2)
         if max(max(max(bwlabeln(this_vertebra_mask)))) > 1
             this_vertebra_mask = ExtractNLargestBlobs3(this_vertebra_mask, 1);
         end   
-        %this_vertebra_mask = activecontour(pet(:,:,start:stop), this_vertebra_mask, 100);
         
-        vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) = vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) + this_vertebra_mask;
+        vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) = ...
+            vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) + this_vertebra_mask;
     end
     
+    % subtract vertebra, erode cortical bone
     other_bone_mask = whole_bone_mask-vertebra_marrow_mask;
     
     bone_mask_eroded = imerode(other_bone_mask, strel('sphere',4));
     
+    % grab largest components as other marrow of interest 
     n_marrow_blobs = 5;
     other_marrow_mask = bwlabeln(ExtractNLargestBlobs3(bone_mask_eroded, n_marrow_blobs));
     
+    %final seg = union of vertebral, other marrow
     bone_marrow_mask = (vertebra_marrow_mask > 0) | (other_marrow_mask > 0);
     
 %% write out to amira
