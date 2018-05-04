@@ -12,9 +12,7 @@ Development of MATLAB analysis tools for segmenting the bone marrow compartment 
 
 Code can be found in matlab/ - see matlab/README for running procedure
 
-Proposal, midpoint report, and final report can be found in the repo wiki.
-
-Doc/ contains copies of the project proposal, midpoint report, and final presentation slides.
+Proposal, midpoint report, and final report can be found in the repo wiki.  Copies of these documents, plus the final presentation slides, can be found in doc/
 
 Result images are in images/
 
