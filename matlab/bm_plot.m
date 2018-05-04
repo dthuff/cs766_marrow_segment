@@ -42,7 +42,7 @@
     daspect([voxel_ratio 1 1]);
     title('Raw CT*Whole Bone Mask');
     other_marrow_mask = saveAnnotatedImg(fh1);
-    imwrite(other_marrow_mask, ['./images/HB' patients{i} '_bone_mask.png']);
+    imwrite(other_marrow_mask, [d_proj 'images/HB' patients{i} '_bone_mask.png']);
 
 
     %% Axial mean HU, SUV with minima locations
@@ -68,7 +68,7 @@
     ylabel('Mean SUV');
     xlabel('z');
     other_marrow_mask = saveAnnotatedImg(fh2);
-    imwrite(other_marrow_mask, ['./images/HB' patients{i} '_axial_dists.png']);
+    %imwrite(other_marrow_mask, [d_proj 'images/HB' patients{i} '_axial_dists.png']);
 
 
     %% CT, PET sagittal slices annotated with identified minima locations
@@ -76,7 +76,7 @@
     subplot(1, 2, 1);
     imshow(rot90(slice_to_plot), ct_window);
     hold on;
-    visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
+    %visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
     for j=1:size(ct_minima_inv,2)
         line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
     end
@@ -89,7 +89,7 @@
     subplot(1, 2, 2);
     imshow(rot90(squeeze(pet(:,slice,:))), pet_window);
     hold on;
-    visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
+    %visboundaries(rot90(squeeze(bone_marrow_mask(:,slice,:))), 'linewidth',1, 'color','blue');
     for j=1:size(ct_minima_inv,2)
         line([300, 310], [ct_minima_inv(j), ct_minima_inv(j)], 'color', 'red', 'linewidth',1);
     end
@@ -100,7 +100,7 @@
     title(['HB' patients{i} ' PET Slice with Detected Minima']);
     
     other_marrow_mask = saveAnnotatedImg(fh3);
-    imwrite(other_marrow_mask, ['./images/HB' patients{i} 'marrow2.png']);
+    %imwrite(other_marrow_mask, [d_proj 'images/HB' patients{i} 'marrow2.png']);
 
     
     %% whole body mask

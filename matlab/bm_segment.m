@@ -4,6 +4,8 @@ addpath('C:/Users/DTHUFF/Documents/Research/generalCodes/');
 
 d_proj = 'C:/Users/DTHUFF/Documents/Class Material/CS766/project/';
 
+d_data = '//mpufs5/data_wnx1/_Data/FDG Bone/';
+
 patients = {'01','02','03','04','05','06','07','08','09','10',...
             '11','12','13','14','15','16','17','18','19','20'};
 
@@ -11,8 +13,8 @@ for i=1:size(patients, 2)
     tic;
 %% Load Patient Data
 
-    d_ct = ['//mpufs5/data_wnx1/_Data/FDG Bone/HB' patients{i} '/Raw/CT'];
-    d_pet = ['//mpufs5/data_wnx1/_Data/FDG Bone/HB' patients{i} '/Raw/Recon1'];
+    d_ct  = [d_data 'HB' patients{i} '/Raw/CT'];
+    d_pet = [d_data 'HB' patients{i} '/Raw/Recon1'];
 
     [ct_struct, ct_header] = dcm2mat(d_ct);
     [pet_struct, pet_header] = dcm2mat(d_pet);
@@ -38,6 +40,8 @@ for i=1:size(patients, 2)
     % find axial minima on both CT and PET
     ct_prominence_threshold = 20;
     pet_prominence_threshold = 0.15;
+    pet_prominence_threshold = 0.05;
+
 
     m_ct = find_axial_minima(ct, whole_bone_mask, ct_prominence_threshold);
     ct_minima = fliplr(m_ct.minima_slice_indices);
@@ -53,19 +57,36 @@ for i=1:size(patients, 2)
     
     [shoulder_slice, pelvis_slice] = find_spine_ends(pet, shoulder_offset, pelvis_offset);
     
-    pet_minima = pet_minima((pet_minima < pelvis_slice) & ...
-                            (pet_minima > shoulder_slice));
-    ct_minima =  ct_minima((ct_minima < pelvis_slice) & ...
-                           (ct_minima > shoulder_slice));
+    pet_minima = fliplr(pet_minima((pet_minima < pelvis_slice) & ...
+                            (pet_minima > shoulder_slice)));
+    ct_minima =  fliplr(ct_minima((ct_minima < pelvis_slice) & ...
+                           (ct_minima > shoulder_slice)));
 
     % inverted minima indices, for plotting
     pet_minima_inv = size(ct,3) + 1 - pet_minima;
     ct_minima_inv =  size(ct,3) + 1 - ct_minima;
 
     
-    % Kalman filtering?
+    % Kalman filtering
     
+    % matrix for producing predicted vert locations
+    gain = 0.95;
+    A = [1 1; 0 gain];
     
+    % xk = [location of minima; height of vertebra]
+    xk = [pet_minima(1); pet_minima(2)-pet_minima(1)];
+    
+    % vertebra locations, as predicted by filtering
+    pred_vert_locs = zeros([1, length(pet_minima)]);
+    
+    %produce predicted vert locations
+    for j = 1:length(pet_minima)
+        pred_vert_locs(j) = xk(1);
+        xk = A*xk;
+    end
+    
+    % compare detected minima locations to predicted locations
+    [pet_minima; round(pred_vert_locs)]'
     
     % for each pet minima
     for j = 1:size(pet_minima, 2)-1
