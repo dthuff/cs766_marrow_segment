@@ -129,7 +129,7 @@ for i=1:size(patients, 2)
     bm_out.data = single(bone_marrow_mask);
     bm_out.voxel_size = ct_struct.voxel_size;
     bm_out.start = ct_struct.start;
-    mat2am(bm_out, ['//mpufs5/data_wnx1/_Data/FDG Bone/HB' patients{i} '/Processed/HB' patients{i} '_BM_MASK.am']);
+    mat2am(bm_out, [d_data 'HB' patients{i} '/Processed/HB' patients{i} '_BM_MASK.am']);
     
 %%  Close figures, write out timing
     close all;
