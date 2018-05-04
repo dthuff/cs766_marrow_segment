@@ -16,6 +16,8 @@ Proposal, midpoint report, and final report can be found in the repo wiki.  Copi
 
 Result images are in images/
 
+Due to data sharing restrictions, I cannot make available my raw input data. However, some publicly available PET/CT dicom data can be found on The Cancer Imaging Archive - for example: https://wiki.cancerimagingarchive.net/display/Public/Soft-tissue-Sarcoma
+
 
 
 --
