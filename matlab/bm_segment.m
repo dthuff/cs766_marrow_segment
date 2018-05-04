@@ -34,13 +34,16 @@ for i=1:size(patients, 2)
     % mask CT, PET with bone mask
     ct_bone = ct.*whole_bone_mask;
     pet_bone = pet.*whole_bone_mask;
+    
+    % set up vertebral marrow mask
     vertebra_marrow_mask = zeros(size(ct));
 
     %% segment vertebral marrow 
     % find axial minima on both CT and PET
     ct_prominence_threshold = 20;
-    pet_prominence_threshold = 0.15;
-    pet_prominence_threshold = 0.05;
+    pet_prominence_threshold = 0.15; %good threshold
+    % pet_prominence_threshold = 0.05; %lower threshold for more FP +
+    % Kalman filtering
 
 
     m_ct = find_axial_minima(ct, whole_bone_mask, ct_prominence_threshold);
@@ -105,6 +108,7 @@ for i=1:size(patients, 2)
             this_vertebra_mask = ExtractNLargestBlobs3(this_vertebra_mask, 1);
         end   
         
+        % add eroded vertebra to marrow mask
         vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) = ...
             vertebra_marrow_mask(:,:,vertebra_start:vertebra_stop) + this_vertebra_mask;
     end
