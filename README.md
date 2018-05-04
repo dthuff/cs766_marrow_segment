@@ -23,11 +23,12 @@ Result images are in images/
 
 Daniel Huff
 
-dthuff@wisc.edu
+CS 766: Computer Vision, Spring 2018
 
-Unviersity of Wisconsin-Madison
+Dept of Medical Physics
 
-Spring 2018
+University of Wisconsin-Madison
 
+Contact: dthuff@wisc.edu
 
 --
